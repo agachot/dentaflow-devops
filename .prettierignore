@@ -1,0 +1,36 @@
+# Build output
+/dist
+/out-tsc
+/tmp
+ 
+# Dependencies
+/node_modules
+ 
+# Angular cache
+/.angular/cache
+ 
+# Coverage & test reports
+/coverage
+ 
+# IDEs & editors
+/.idea
+/.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+ 
+# Misc
+/.sass-cache
+.history
+*.log
+ 
+# System files
+.DS_Store
+Thumbs.db
+ 
+# Angular config / project files not needed for formatting
+package-lock.json
+package.json
+/yarn.lock
+/karma.conf.js
