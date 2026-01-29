@@ -17,11 +17,12 @@ pipeline {
         stage('Build Angular') {
             steps {
                 sh '''
-                  docker run --rm \
+                docker run --rm \
+                    -u root \
                     -v "$PWD":/app \
-                    -w /app/dentaflow-front \
+                    -w /app \
                     node:20-alpine \
-                    sh -c "npm install && npm run build"
+                    sh -c "ls -la && npm install && npm run build"
                 '''
             }
         }
