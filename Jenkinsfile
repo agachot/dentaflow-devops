@@ -27,6 +27,22 @@ pipeline {
                 sh 'npm install'
             }
         }
+        stage('Run Unit Tests') {
+            steps {
+                sh 'npm run test -- --coverage'
+            }
+        }
+        
+        stage('SonarQube Analysis') {
+            environment {
+                scannerHome = tool 'SonarQubeScanner'
+            }
+            steps {
+                withSonarQubeEnv('SonarQube') {
+                    sh "${scannerHome}/bin/sonar-scanner"
+                }
+            }
+        }
 
         stage('Build Angular') {
             steps {
@@ -38,6 +54,11 @@ pipeline {
             steps {
                 sh 'cp -r dist/dentaflow-front/* /var/jenkins_workspace/dist/dentaflow-front/'
             }
+        }
+    }
+    post {
+        failure {
+            echo "Le pipeline a échoué. Vérifie les tests et l'analyse SonarQube."
         }
     }
 }
