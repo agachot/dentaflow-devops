@@ -1,38 +1,43 @@
 pipeline {
     agent any
 
+    environment {
+        NODE_VERSION = '20'
+    }
+
     stages {
         stage('Checkout') {
             steps {
                 git url: 'https://github.com/agachot/dentaflow-devops-front.git', branch: 'develop'
             }
         }
-        stage('Debug files') {
+
+        stage('Install Node.js') {
             steps {
-                sh 'ls -la'
-                sh 'find . -name package.json'
+                script {
+                    // Installer Node.js dans le conteneur Jenkins
+                    sh 'curl -fsSL https://deb.nodesource.com/setup_20.x | bash -'
+                    sh 'apt-get install -y nodejs'
+                }
+            }
+        }
+
+        stage('Install Dependencies') {
+            steps {
+                sh 'npm install'
             }
         }
 
         stage('Build Angular') {
             steps {
-                sh '''
-                docker run --rm \
-                    -u root \
-                    -v "$PWD":/app \
-                    -w /app \
-                    node:20-alpine \
-                    sh -c "ls -la && npm install && npm run build"
-                '''
+                sh 'npm run build --prod'
             }
         }
 
-        stage('Archive') {
+        stage('Deploy to Nginx') {
             steps {
-                archiveArtifacts artifacts: 'dist/**', fingerprint: true
+                sh 'cp -r dist/dentaflow-front/* /var/jenkins_workspace/dist/dentaflow-front/'
             }
         }
     }
 }
-
- 

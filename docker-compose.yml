@@ -1,0 +1,26 @@
+version: '3.9'
+
+services:
+  jenkins:
+    image: jenkins/jenkins:2.541.1-jdk21
+    container_name: jenkins
+    user: root
+    ports:
+      - '8080:8080'
+      - '50000:50000'
+    volumes:
+      - jenkins_home:/var/jenkins_home
+      - ./workspace:/var/jenkins_workspace # Workspace partagé pour les builds
+    restart: unless-stopped
+
+  angular-app:
+    image: nginx:alpine
+    container_name: angular-app
+    ports:
+      - '4200:80'
+    volumes:
+      - ./workspace/dist/dentaflow-front:/usr/share/nginx/html # Fichier buildé par Jenkins
+    restart: unless-stopped
+
+volumes:
+  jenkins_home:
